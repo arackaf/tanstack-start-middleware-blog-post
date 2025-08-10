@@ -1,7 +1,7 @@
-import { useServerFn } from "@tanstack/react-start";
-import { useSuspenseQuery } from "@tanstack/react-query";
+import { IntersectAllValidatorInputs, RequiredFetcher, useServerFn } from "@tanstack/react-start";
+import { useQuery, useSuspenseQuery } from "@tanstack/react-query";
 
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute, Expand, Link } from "@tanstack/react-router";
 import { useEffect, useRef, useState } from "react";
 import { postToApi } from "../../../../../backend/fetchUtils";
 import { createServerFn } from "@tanstack/react-start";
@@ -19,6 +19,22 @@ export const saveEpic = createServerFn({ method: "POST" })
 
     //throw redirect({ to: "/app/epics", search: { page: 1 } });
   });
+
+saveEpic({ data: { id: "1", newName: "test" } });
+
+//type X = Expand<IntersectAllValidatorInputs<any, T>>;
+const useRevalidatedQuery = <T,>(
+  prefix: string,
+  keyValues: Expand<IntersectAllValidatorInputs<any, T>>,
+  serverFn: RequiredFetcher<any, T, any, any>
+) => {
+  return useQuery({
+    queryKey: [prefix, keyValues],
+    queryFn: () => serverFn({ data: keyValues })
+  });
+};
+
+useRevalidatedQuery("epic", { id: "1", newName: "test" }, saveEpic);
 
 export const Route = createFileRoute("/app/epics/$epicId/edit")({
   component: EditEpic,
