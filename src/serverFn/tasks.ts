@@ -5,7 +5,7 @@ import { asc, count, eq } from "drizzle-orm";
 import { loggingMiddleware } from "./middleware";
 
 export const getTasksList = createServerFn({ method: "GET" })
-  .middleware([loggingMiddleware("tasks list")])
+  //.middleware([loggingMiddleware("tasks list")])
   .handler(async () => {
     await new Promise(resolve => setTimeout(resolve, 1000 * Math.random()));
     const tasks = await db.select().from(tasksTable).where(eq(tasksTable.userId, 1));
