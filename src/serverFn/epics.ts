@@ -2,10 +2,8 @@ import { createServerFn } from "@tanstack/react-start";
 import { db } from "@/drizzle/db";
 import { epics as epicsTable, tasks as tasksTable, milestones as milestonesTable } from "@/drizzle/schema";
 import { asc, count, eq } from "drizzle-orm";
-import { loggingMiddleware } from "@/middleware/logging";
 
 export const getEpicsList = createServerFn({ method: "GET" })
-  .middleware([loggingMiddleware("get epics list")])
   .validator((page: number) => page)
   .handler(async ({ data }) => {
     const epics = await db
@@ -17,43 +15,37 @@ export const getEpicsList = createServerFn({ method: "GET" })
   });
 
 export const getEpic = createServerFn({ method: "GET" })
-  .middleware([loggingMiddleware("get epic")])
   .validator((id: string | number) => Number(id))
   .handler(async ({ data }) => {
     const epic = await db.select().from(epicsTable).where(eq(epicsTable.id, data));
     return epic[0];
   });
 
-export const getEpicsCount = createServerFn({ method: "GET" })
-  .middleware([loggingMiddleware("get epics count")])
-  .handler(async ({}) => {
-    const count = await db.$count(epicsTable);
-    return { count };
-  });
+export const getEpicsCount = createServerFn({ method: "GET" }).handler(async ({}) => {
+  const count = await db.$count(epicsTable);
+  return { count };
+});
 
-export const getEpicsOverview = createServerFn({ method: "GET" })
-  .middleware([loggingMiddleware("get epics overview")])
-  .handler(async ({}) => {
-    const subQuery = db
-      .select({ epicId: epicsTable.id, count: count().as("count") })
-      .from(epicsTable)
-      .innerJoin(tasksTable, eq(epicsTable.id, tasksTable.epicId))
-      .groupBy(epicsTable.id)
-      .as("epic_counts");
+export const getEpicsOverview = createServerFn({ method: "GET" }).handler(async ({}) => {
+  const subQuery = db
+    .select({ epicId: epicsTable.id, count: count().as("count") })
+    .from(epicsTable)
+    .innerJoin(tasksTable, eq(epicsTable.id, tasksTable.epicId))
+    .groupBy(epicsTable.id)
+    .as("epic_counts");
 
-    const query = db
-      .with(subQuery)
-      .select({ id: epicsTable.id, name: epicsTable.name, count: subQuery.count })
-      .from(epicsTable)
-      .innerJoin(subQuery, eq(epicsTable.id, subQuery.epicId))
-      .orderBy(asc(subQuery.count));
+  const query = db
+    .with(subQuery)
+    .select({ id: epicsTable.id, name: epicsTable.name, count: subQuery.count })
+    .from(epicsTable)
+    .innerJoin(subQuery, eq(epicsTable.id, subQuery.epicId))
+    .orderBy(asc(subQuery.count));
 
-    const results = await query;
-    return results;
-  });
+  const results = await query;
+  return results;
+});
 
 export const getEpicMilestones = createServerFn({ method: "GET" })
-  .middleware([loggingMiddleware("get epic milestones")])
   .validator((id: string | number) => Number(id))
   .handler(async ({ data }) => {
     const milestones = await db
@@ -65,7 +57,6 @@ export const getEpicMilestones = createServerFn({ method: "GET" })
   });
 
 export const updateEpic = createServerFn({ method: "GET" })
-  .middleware([loggingMiddleware("update epic")])
   .validator((obj: { id: number; name: string }) => obj)
   .handler(async ({ data }) => {
     await new Promise(resolve => setTimeout(resolve, 1000 * Math.random()));
