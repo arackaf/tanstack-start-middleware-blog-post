@@ -3,18 +3,6 @@ import { queryOptions } from "../lib/queryOptions";
 import { revalidatedQueryOptions } from "./util";
 
 export const epicsQueryOptions = (page: number) => {
-  return queryOptions({
-    queryKey: ["epics", "list", page],
-    queryFn: async () => {
-      const epics = await getEpicsList({ data: page });
-      return epics;
-    },
-    staleTime: 1000 * 60 * 5,
-    gcTime: 1000 * 60 * 5
-  });
-};
-
-export const epicsQueryOptions2 = (page: number) => {
   return revalidatedQueryOptions(["epics", "list"], getEpicsList, page, {
     staleTime: 1000 * 60 * 5,
     gcTime: 1000 * 60 * 5

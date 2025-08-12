@@ -20,8 +20,7 @@ export const revalidatedQueryOptions = <T, U>(
       return result;
     },
     meta: {
-      serverFn,
-      args
+      THIS_IS_THE_PROBLEM: () => {}
     }
   });
 };
