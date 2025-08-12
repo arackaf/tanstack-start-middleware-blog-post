@@ -10,12 +10,18 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AppIndexRouteImport } from './routes/app/index'
 import { Route as AppEpicsRouteRouteImport } from './routes/app/epics/route'
 import { Route as AppEpicsIndexRouteImport } from './routes/app/epics/index'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AppIndexRoute = AppIndexRouteImport.update({
+  id: '/app/',
+  path: '/app/',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AppEpicsRouteRoute = AppEpicsRouteRouteImport.update({
@@ -32,29 +38,33 @@ const AppEpicsIndexRoute = AppEpicsIndexRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/app/epics': typeof AppEpicsRouteRouteWithChildren
+  '/app': typeof AppIndexRoute
   '/app/epics/': typeof AppEpicsIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/app': typeof AppIndexRoute
   '/app/epics': typeof AppEpicsIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/app/epics': typeof AppEpicsRouteRouteWithChildren
+  '/app/': typeof AppIndexRoute
   '/app/epics/': typeof AppEpicsIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/app/epics' | '/app/epics/'
+  fullPaths: '/' | '/app/epics' | '/app' | '/app/epics/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/app/epics'
-  id: '__root__' | '/' | '/app/epics' | '/app/epics/'
+  to: '/' | '/app' | '/app/epics'
+  id: '__root__' | '/' | '/app/epics' | '/app/' | '/app/epics/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AppEpicsRouteRoute: typeof AppEpicsRouteRouteWithChildren
+  AppIndexRoute: typeof AppIndexRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -64,6 +74,13 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/app/': {
+      id: '/app/'
+      path: '/app'
+      fullPath: '/app'
+      preLoaderRoute: typeof AppIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/app/epics': {
@@ -98,6 +115,7 @@ const AppEpicsRouteRouteWithChildren = AppEpicsRouteRoute._addFileChildren(
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AppEpicsRouteRoute: AppEpicsRouteRouteWithChildren,
+  AppIndexRoute: AppIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
