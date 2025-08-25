@@ -64,7 +64,7 @@ export const getEpicMilestones = createServerFn({ method: "GET" })
     return milestones;
   });
 
-export const updateEpic = createServerFn({ method: "GET" })
+export const updateEpic = createServerFn({ method: "POST" })
   .middleware([loggingMiddleware("update epic")])
   .validator((obj: { id: number; name: string }) => obj)
   .handler(async ({ data }) => {
