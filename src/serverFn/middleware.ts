@@ -6,10 +6,12 @@ export const loggingMiddleware = (name: string) =>
     .client(async ({ next, context }) => {
       console.log(name, "client", context);
 
+      const clientStart = new Date().toISOString();
+
       const result = await next({
         sendContext: {
           traceId: crypto.randomUUID(),
-          clientStart: new Date().toISOString()
+          clientStart
         }
       });
 
