@@ -3,10 +3,13 @@ import { db } from "@/drizzle/db";
 import { epics as epicsTable, tasks as tasksTable, milestones as milestonesTable } from "@/drizzle/schema";
 import { asc, count, eq } from "drizzle-orm";
 import { loggingMiddleware } from "./middleware";
+import { middlewareDemo } from "./middlewareDemo";
+
+//.middleware([loggingMiddleware("get epics list")])
 
 export const getEpicsList = createServerFn({ method: "GET" })
-  .middleware([loggingMiddleware("get epics list")])
   .validator((page: number) => page)
+  .middleware([middlewareDemo])
   .handler(async ({ data }) => {
     const epics = await db
       .select()
