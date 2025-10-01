@@ -7,9 +7,12 @@
     "start": "node .output/server/index.mjs",
     "build": "vite build",
     "serve": "vite preview",
-    "test": "vitest run"
+    "test": "vitest run",
+    "tsc": "tsc",
+    "reset-db": "tsx backend/db-setup.ts"
   },
   "dependencies": {
+    "@libsql/client": "^0.15.10",
     "@tailwindcss/vite": "^4.0.6",
     "@tanstack/react-devtools": "^0.7.0",
     "@tanstack/react-query": "^5.66.5",
@@ -19,8 +22,11 @@
     "@tanstack/react-router-ssr-query": "^1.131.7",
     "@tanstack/react-start": "^1.132.0",
     "@tanstack/router-plugin": "^1.132.0",
+    "drizzle-kit": "^0.31.5",
+    "drizzle-orm": "^0.44.5",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
+    "sqlite3": "^5.1.7",
     "tailwindcss": "^4.0.6",
     "vite-tsconfig-paths": "^5.1.4"
   },
