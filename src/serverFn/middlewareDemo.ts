@@ -10,7 +10,7 @@ export const middlewareDemo = createMiddleware({ type: "function" })
       }
     });
 
-    console.log("client after", context);
+    console.log("client after", result.context);
 
     return result;
   })
