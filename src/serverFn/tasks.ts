@@ -14,7 +14,7 @@ export const getTasksList = createServerFn({ method: "GET" })
 
 export const getTask = createServerFn({ method: "GET" })
   .middleware([loggingMiddleware("get task")])
-  .validator((id: string) => Number(id))
+  .inputValidator((id: string) => Number(id))
   .handler(async ({ data }) => {
     const task = await db.select().from(tasksTable).where(eq(tasksTable.id, data));
     return task[0];
@@ -35,7 +35,7 @@ export const getTasksOverview = createServerFn({ method: "GET" })
 
 export const updateTask = createServerFn({ method: "POST" })
   .middleware([loggingMiddleware("update task")])
-  .validator((obj: { id: number; name: string }) => obj)
+  .inputValidator((obj: { id: number; name: string }) => obj)
   .handler(async ({ data }) => {
     await new Promise(resolve => setTimeout(resolve, 1000 * Math.random()));
     await db.update(tasksTable).set({ title: data.name }).where(eq(tasksTable.id, data.id));

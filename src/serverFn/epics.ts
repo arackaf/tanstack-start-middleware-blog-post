@@ -8,7 +8,7 @@ import { middlewareDemo } from "./middlewareDemo";
 //.middleware([loggingMiddleware("get epics list")])
 
 export const getEpicsList = createServerFn({ method: "GET" })
-  .validator((page: number) => page)
+  .inputValidator((page: number) => page)
   .middleware([middlewareDemo])
   .handler(async ({ data }) => {
     const epics = await db
@@ -21,7 +21,7 @@ export const getEpicsList = createServerFn({ method: "GET" })
 
 export const getEpic = createServerFn({ method: "GET" })
   .middleware([loggingMiddleware("get epic")])
-  .validator((id: string | number) => Number(id))
+  .inputValidator((id: string | number) => Number(id))
   .handler(async ({ data }) => {
     const epic = await db.select().from(epicsTable).where(eq(epicsTable.id, data));
     return epic[0];
@@ -57,7 +57,7 @@ export const getEpicsOverview = createServerFn({ method: "GET" })
 
 export const getEpicMilestones = createServerFn({ method: "GET" })
   .middleware([loggingMiddleware("get epic milestones")])
-  .validator((id: string | number) => Number(id))
+  .inputValidator((id: string | number) => Number(id))
   .handler(async ({ data }) => {
     const milestones = await db
       .select()
@@ -69,7 +69,7 @@ export const getEpicMilestones = createServerFn({ method: "GET" })
 
 export const updateEpic = createServerFn({ method: "POST" })
   .middleware([loggingMiddleware("update epic")])
-  .validator((obj: { id: number; name: string }) => obj)
+  .inputValidator((obj: { id: number; name: string }) => obj)
   .handler(async ({ data }) => {
     await new Promise(resolve => setTimeout(resolve, 1000 * Math.random()));
     await db.update(epicsTable).set({ name: data.name }).where(eq(epicsTable.id, data.id));
