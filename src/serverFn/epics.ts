@@ -8,7 +8,7 @@ import { middlewareDemo } from "./middlewareDemo";
 //.middleware([loggingMiddleware("get epics list")])
 
 export const junkTempServerFn = createServerFn({ method: "GET" })
-  .middleware([middlewareDemo])
+  .middleware([middlewareDemo("junkTempServerFn")])
   .handler(async ({ context }) => {
     console.log("junkTempServerFn serverFn", context);
 
@@ -17,7 +17,7 @@ export const junkTempServerFn = createServerFn({ method: "GET" })
 
 export const getEpicsList = createServerFn({ method: "GET" })
   .inputValidator((page: number) => page)
-  .middleware([middlewareDemo])
+  .middleware([middlewareDemo("getEpicsList")])
   .handler(async ({ data, context }) => {
     console.log("getEpicsList serverFn", context);
     const epics = await db

@@ -1,31 +1,32 @@
 import { createMiddleware } from "@tanstack/react-start";
 
-export const middlewareDemo = createMiddleware({ type: "function" })
-  .client(async ({ next, context }) => {
-    console.log("client before", context);
+export const middlewareDemo = (name: string) =>
+  createMiddleware({ type: "function" })
+    .client(async ({ next, context }) => {
+      console.log("client before", name, context);
 
-    const result = await next({
-      sendContext: {
-        hello: "world"
-      }
+      const result = await next({
+        sendContext: {
+          hello: "world"
+        }
+      });
+
+      console.log("client after", name, result.context);
+
+      return result;
+    })
+    .server(async ({ next, context }) => {
+      console.log("server before", name, context);
+
+      await new Promise(resolve => setTimeout(resolve, 1000));
+
+      const result = await next({
+        sendContext: {
+          value: 12
+        }
+      });
+
+      console.log("server after", name, context);
+
+      return result;
     });
-
-    console.log("client after", result.context);
-
-    return result;
-  })
-  .server(async ({ next, context }) => {
-    console.log("server before", context);
-
-    await new Promise(resolve => setTimeout(resolve, 1000));
-
-    const result = await next({
-      sendContext: {
-        value: 12
-      }
-    });
-
-    console.log("server after", context);
-
-    return result;
-  });
