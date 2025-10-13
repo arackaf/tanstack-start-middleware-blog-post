@@ -11,7 +11,7 @@ interface MyRouterContext {
 }
 
 export const Route = createRootRouteWithContext<MyRouterContext>()({
-  notFoundComponent: props => {
+  notFoundComponent: () => {
     return <div>Not found</div>;
   },
   component: () => {

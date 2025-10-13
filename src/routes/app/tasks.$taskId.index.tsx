@@ -37,7 +37,7 @@ function TaskView() {
           Task {task.id} {isFetching ? "Loading ..." : null}
         </div>
         <h1 className="text-lg">{task.title}</h1>
-        <Link className="text-blue-500 underline" to="/app/tasks/$taskId/edit" params={{ taskId: task.id }}>
+        <Link className="text-blue-500 underline" to="/app/tasks/$taskId/edit" params={{ taskId: task.id + "" }}>
           Edit
         </Link>
         <div />

@@ -5,7 +5,6 @@ import { getTasksOverview } from "@/serverFn/tasks";
 export const Route = createFileRoute("/app/tasks")({
   component: TasksLayout,
   loader: async () => {
-    const now = +new Date();
     const tasksOverview = await getTasksOverview();
     return { tasksOverview };
   },

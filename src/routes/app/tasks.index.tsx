@@ -4,8 +4,7 @@ import { getTasksList } from "../../serverFn/tasks";
 
 export const Route = createFileRoute("/app/tasks/")({
   component: Index,
-  loader: async ({ context }) => {
-    const now = +new Date();
+  loader: async () => {
     const tasks = await getTasksList();
     return { tasks };
   },

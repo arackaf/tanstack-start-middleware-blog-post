@@ -1,7 +1,7 @@
 import { createMiddleware } from "@tanstack/react-start";
 
 export const middlewareDemo = createMiddleware({ type: "function" })
-  .client(async ({ next, context }) => {
+  .client(async ({ next }) => {
     console.log("client before");
 
     const result = await next({
