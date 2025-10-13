@@ -4,7 +4,7 @@ import { addLog, setClientEnd } from "./logging";
 export const loggingMiddleware = (name: string) =>
   createMiddleware({ type: "function" })
     .client(async ({ next, context }) => {
-      console.log(name, "client", context);
+      console.log("middleware for", name, "client", context);
 
       const clientStart = new Date().toISOString();
 

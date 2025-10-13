@@ -7,15 +7,29 @@ import { middlewareDemo } from "./middlewareDemo";
 
 //.middleware([loggingMiddleware("get epics list")])
 
+export const junkTempServerFn = createServerFn({ method: "GET" })
+  .middleware([middlewareDemo])
+  .handler(async ({ context }) => {
+    console.log("junkTempServerFn serverFn", context);
+
+    return { lala: "bar" };
+  });
+
 export const getEpicsList = createServerFn({ method: "GET" })
   .inputValidator((page: number) => page)
   .middleware([middlewareDemo])
-  .handler(async ({ data }) => {
+  .handler(async ({ data, context }) => {
+    console.log("getEpicsList serverFn", context);
     const epics = await db
       .select()
       .from(epicsTable)
       .offset((data - 1) * 4)
       .limit(4);
+
+    console.log("Ad hoc calling serverFn");
+    const xxx = await junkTempServerFn({});
+    console.log("junkTemp result", xxx);
+
     return epics;
   });
 
@@ -29,7 +43,7 @@ export const getEpic = createServerFn({ method: "GET" })
 
 export const getEpicsCount = createServerFn({ method: "GET" })
   .middleware([loggingMiddleware("get epics count")])
-  .handler(async ({}) => {
+  .handler(async () => {
     const count = await db.$count(epicsTable);
     return { count };
   });
