@@ -10,7 +10,6 @@ export const Route = createFileRoute("/app/tasks/$taskId/")({
       throw new Error("I don't want to");
     }
     const now = +new Date();
-    console.log(`/tasks/${taskId} path loader. Loading at + ${now - context.timestarted}ms since start`);
     const task = getTask({ data: taskId });
 
     return { task };
