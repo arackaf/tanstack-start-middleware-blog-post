@@ -2,7 +2,7 @@ import { createServerFn } from "@tanstack/react-start";
 import { db } from "@/drizzle/db";
 import { tasks as tasksTable, users as usersTable } from "@/drizzle/schema";
 import { asc, count, eq } from "drizzle-orm";
-import { loggingMiddleware } from "./middleware";
+import { loggingMiddleware } from "./loggingMiddleware";
 
 export const getTasksList = createServerFn({ method: "GET" })
   .middleware([loggingMiddleware("get tasks list")])

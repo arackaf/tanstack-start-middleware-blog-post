@@ -8,38 +8,36 @@ function getExistingTraceId() {
   return store?.yoyoyo;
 }
 
-export const middlewareDemo = (name: string) =>
-  createMiddleware({ type: "function" })
-    .client(async ({ next, context }) => {
-      //console.log("client before", name, context);
+export const middlewareDemo = createMiddleware({ type: "function" })
+  .client(async ({ next }) => {
+    console.log("client before");
+
+    const result = await next({
+      sendContext: {
+        hello: "world"
+      }
+    });
+
+    console.log("client after");
+
+    return result;
+  })
+  .server(async ({ next }) => {
+    console.log("server before");
+
+    const result = await asyncLocalStorage.run({ yoyoyo: "asyncLocalStorage value" }, async () => {
+      await new Promise(resolve => setTimeout(resolve, 1000));
 
       const result = await next({
         sendContext: {
-          hello: "world"
+          value: 12
         }
       });
 
-      //console.log("client after", name, result.context);
-
-      return result;
-    })
-    .server(async ({ next, context }) => {
-      const existingTraceId = getExistingTraceId();
-      console.log("server before", name, { existingTraceId }, context);
-
-      const result = await asyncLocalStorage.run({ yoyoyo: "asyncLocalStorage value" }, async () => {
-        await new Promise(resolve => setTimeout(resolve, 1000));
-
-        const result = await next({
-          sendContext: {
-            value: 12
-          }
-        });
-
-        console.log("server after", name, context);
-
-        return result;
-      });
+      console.log("server after");
 
       return result;
     });
+
+    return result;
+  });

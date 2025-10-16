@@ -2,22 +2,14 @@ import { createServerFn } from "@tanstack/react-start";
 import { db } from "@/drizzle/db";
 import { epics as epicsTable, tasks as tasksTable, milestones as milestonesTable } from "@/drizzle/schema";
 import { asc, count, eq } from "drizzle-orm";
-import { loggingMiddleware } from "./middleware";
-import { middlewareDemo } from "./middlewareDemo";
-
-//.middleware([loggingMiddleware("get epics list")])
-
-export const junkTempServerFn = createServerFn({ method: "GET" })
-  .middleware([middlewareDemo("junkTempServerFn")])
-  .handler(async ({ context }) => {
-    console.log("junkTempServerFn serverFn", context);
-
-    return { lala: "bar" };
-  });
+import { loggingMiddleware } from "./loggingMiddleware";
+import { loggingMiddleware as loggingMiddlewareV2 } from "./loggingMiddlewareV2";
+import { loggingMiddleware as loggingMiddlewareV3 } from "./loggingMiddlewareV3";
 
 export const getEpicsList = createServerFn({ method: "GET" })
   .inputValidator((page: number) => page)
-  .middleware([middlewareDemo("getEpicsList")])
+  //.middleware([loggingMiddleware("get epics list")])
+  //.middleware([loggingMiddlewareV2("get epics list")])
   .handler(async ({ data, context }) => {
     console.log("getEpicsList serverFn", context);
     const epics = await db
@@ -26,15 +18,11 @@ export const getEpicsList = createServerFn({ method: "GET" })
       .offset((data - 1) * 4)
       .limit(4);
 
-    console.log("Ad hoc calling serverFn");
-    const xxx = await junkTempServerFn({});
-    console.log("junkTemp result", xxx);
-
     return epics;
   });
 
 export const getEpic = createServerFn({ method: "GET" })
-  .middleware([loggingMiddleware("get epic")])
+  .middleware([loggingMiddlewareV3("get epic")])
   .inputValidator((id: string | number) => Number(id))
   .handler(async ({ data }) => {
     const epic = await db.select().from(epicsTable).where(eq(epicsTable.id, data));
@@ -42,14 +30,14 @@ export const getEpic = createServerFn({ method: "GET" })
   });
 
 export const getEpicsCount = createServerFn({ method: "GET" })
-  .middleware([loggingMiddleware("get epics count")])
+  // .middleware([loggingMiddleware("get epics count")])
   .handler(async () => {
     const count = await db.$count(epicsTable);
     return { count };
   });
 
 export const getEpicsOverview = createServerFn({ method: "GET" })
-  .middleware([loggingMiddleware("get epics overview")])
+  // .middleware([loggingMiddleware("get epics overview")])
   .handler(async ({}) => {
     const subQuery = db
       .select({ epicId: epicsTable.id, count: count().as("count") })
@@ -70,7 +58,7 @@ export const getEpicsOverview = createServerFn({ method: "GET" })
   });
 
 export const getEpicMilestones = createServerFn({ method: "GET" })
-  .middleware([loggingMiddleware("get epic milestones")])
+  // .middleware([loggingMiddleware("get epic milestones")])
   .inputValidator((id: string | number) => Number(id))
   .handler(async ({ data }) => {
     const milestones = await db
@@ -82,9 +70,12 @@ export const getEpicMilestones = createServerFn({ method: "GET" })
   });
 
 export const updateEpic = createServerFn({ method: "POST" })
-  .middleware([loggingMiddleware("update epic")])
+  .middleware([loggingMiddlewareV3("update epic")])
   .inputValidator((obj: { id: number; name: string }) => obj)
   .handler(async ({ data }) => {
     await new Promise(resolve => setTimeout(resolve, 1000 * Math.random()));
     await db.update(epicsTable).set({ name: data.name }).where(eq(epicsTable.id, data.id));
+
+    const updatedEpic = await getEpic({ data: data.id });
+    return updatedEpic;
   });

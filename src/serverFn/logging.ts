@@ -1,7 +1,8 @@
-import { db } from "@/drizzle/db";
-import { actionLog } from "@/drizzle/schema";
 import { createServerFn } from "@tanstack/react-start";
 import { eq } from "drizzle-orm";
+
+import { db } from "@/drizzle/db";
+import { actionLog } from "@/drizzle/schema";
 
 type AddLogPayload = { actionName: string; clientStart: string; traceId: string; duration: number };
 
