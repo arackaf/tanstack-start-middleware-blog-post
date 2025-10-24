@@ -70,7 +70,7 @@ export const getEpicMilestones = createServerFn({ method: "GET" })
   });
 
 export const updateEpic = createServerFn({ method: "POST" })
-  .middleware([loggingMiddlewareV3("update epic")])
+  .middleware([loggingMiddleware("update epic")])
   .inputValidator((obj: { id: number; name: string }) => obj)
   .handler(async ({ data }) => {
     await new Promise(resolve => setTimeout(resolve, 1000 * Math.random()));

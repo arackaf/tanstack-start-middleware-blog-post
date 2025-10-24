@@ -18,6 +18,8 @@ export const loggingMiddleware = (name: string) =>
       // ERROR: 'result.context' is possibly 'undefined'
       const loggingId = result.context.loggingId;
 
+      console.log("MANUEL -> loggingId", loggingId);
+
       await setClientEnd({ data: { id: loggingId, clientEnd } });
 
       return result;
