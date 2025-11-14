@@ -8,6 +8,7 @@ export const epicQueryOptions = (id: string | number) => {
     queryKey: ["epic", id],
     queryFn: async () => {
       const epic = await getEpic({ data: id });
+      console.log("Query Option", { epic });
       return epic;
     },
     staleTime: 1000 * 60 * 5,

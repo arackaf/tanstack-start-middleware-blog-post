@@ -50,15 +50,26 @@ const loggingMiddlewarePre = (name: string) =>
     });
 
 export const loggingMiddleware = (name: string) =>
-  createMiddleware({ type: "function" })
-    .middleware([loggingMiddlewarePre(name)])
-    .client(async ({ next }) => {
-      const result = await next();
+  createMiddleware({ type: "request" }).server(async ({ context, request, pathname }) => {
+    return {
+      result: {
+        id: 1,
+        name: "Foo Bar Migrate to PlanetScale"
+      },
+      pathname,
+      request,
+      context,
+      response: Response.json(null)
+    };
+  });
+// .middleware([loggingMiddlewarePre(name)])
+// .client(async ({ next }) => {
+//   const result = await next();
 
-      const clientEnd = new Date().toISOString();
-      const loggingId = result.context.loggingId;
+//   const clientEnd = new Date().toISOString();
+//   const loggingId = result.context.loggingId;
 
-      await setClientEnd({ data: { id: loggingId, clientEnd } });
+//   await setClientEnd({ data: { id: loggingId, clientEnd } });
 
-      return result;
-    });
+//   return result;
+// });

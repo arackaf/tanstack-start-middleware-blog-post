@@ -25,7 +25,11 @@ export const getEpic = createServerFn({ method: "GET" })
   .middleware([loggingMiddlewareV3("get epic")])
   .inputValidator((id: string | number) => Number(id))
   .handler(async ({ data }) => {
+    console.log("QUERYING EPIC");
     const epic = await db.select().from(epicsTable).where(eq(epicsTable.id, data));
+
+    console.log({ epic });
+
     return epic[0];
   });
 
@@ -70,7 +74,7 @@ export const getEpicMilestones = createServerFn({ method: "GET" })
   });
 
 export const updateEpic = createServerFn({ method: "POST" })
-  .middleware([loggingMiddlewareV3("update epic")])
+  // .middleware([loggingMiddlewareV3("update epic")])
   .inputValidator((obj: { id: number; name: string }) => obj)
   .handler(async ({ data }) => {
     await new Promise(resolve => setTimeout(resolve, 1000 * Math.random()));
